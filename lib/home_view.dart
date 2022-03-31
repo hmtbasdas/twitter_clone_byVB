@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
+import 'home/tabbar_view.dart';
+
 class HomeView extends StatefulWidget {
-  const HomeView({Key? key}) : super(key: key);
+
+  final ScrollController scrollController;
+
+  const HomeView(this.scrollController, {Key? key}) : super(key: key);
 
   @override
   State<HomeView> createState() => _HomeViewState();
@@ -9,66 +14,18 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
 
-  String _githubPhotoUrl = "https://avatars0.githubusercontent.com/u/17102578?s=4606v=4";
-
-  String _randomImage = "https://picsum.photos/200";
+  String _randomImage = "https://picsum.photo/200";
 
   String _dummyText = "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout.";
 
   int defaultTabLength = 4;
-
-  bool _isHeaderClose = false;
   double lastOffset = 0;
-
-  late ScrollController scrollController;
-
-  @override
-  void initState() {
-    super.initState();
-    scrollController = ScrollController();
-
-    scrollController.addListener(() {
-
-      if(scrollController.offset <= 0){
-        _isHeaderClose = false;
-      }
-      else if(scrollController.offset >= scrollController.position.maxScrollExtent){
-        _isHeaderClose = true;
-      }
-      else {
-        _isHeaderClose = scrollController.offset > lastOffset ? true : false;
-      }
-
-      setState(() {
-        lastOffset = scrollController.offset;
-      });
-
-      print(scrollController.offset);
-    });
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    scrollController.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: _fabButton,
-      body: SafeArea(
-        child: DefaultTabController(
-          length: defaultTabLength,
-          child: Column(
-            children: [
-              _containerAppbar,
-              _tabbarItems,
-              _expandedListView,
-            ],
-          ),
-        ),
-      ),
+      body: _listView,
     );
   }
 
@@ -79,49 +36,8 @@ class _HomeViewState extends State<HomeView> {
     ),
   );
 
-  Widget get _containerAppbar => AnimatedContainer(
-    duration: Duration(milliseconds: 500),
-    height: _isHeaderClose ? 0 : 50,
-    child: _appBar,
-  );
-
-  Widget get _appBar => AppBar(
-    title: _appBarItems,
-    centerTitle: false,
-    elevation: 0,
-  );
-
-  Widget get _appBarItems => Wrap(
-    crossAxisAlignment: WrapCrossAlignment.center,
-    spacing: 3,
-    children: [
-      CircleAvatar(
-        backgroundImage: NetworkImage(
-          _githubPhotoUrl
-        ),
-      ),
-      Text(
-        "Home",
-        style: titleTextStyle,
-      ),
-    ],
-  );
-
-  Widget get _tabbarItems => TabBar(
-    tabs: [
-      Tab(icon: Icon(Icons.dashboard),),
-      Tab(icon: Icon(Icons.dashboard),),
-      Tab(icon: Icon(Icons.dashboard),),
-      Tab(icon: Icon(Icons.dashboard),),
-    ],
-  );
-
-  Widget get _expandedListView => Expanded(
-    child: _listView,
-  );
-
   Widget get _listView => ListView.builder(
-    controller: scrollController,
+    controller: widget.scrollController,
     physics: BouncingScrollPhysics(),
     itemCount: 3,
     itemBuilder: (context, index){
@@ -148,10 +64,6 @@ class _HomeViewState extends State<HomeView> {
         ],
       ),
     ),
-  );
-
-  Widget get _emptySpace => SizedBox(
-    height: 10,
   );
 
   Widget _listCardTitle(String text) => Text(
@@ -187,10 +99,3 @@ class _HomeViewState extends State<HomeView> {
     onTap: (){},
   );
 }
-
-final titleTextStyle = TextStyle(
-  fontSize: 20,
-  fontWeight: FontWeight.w800,
-  color: Colors.black,
-  letterSpacing: -0.5,
-);

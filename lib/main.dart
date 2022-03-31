@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:twittercopy/home/tabbar_view.dart';
 import 'package:twittercopy/home_view.dart';
 
 void main() {
@@ -24,7 +25,7 @@ class MyApp extends StatelessWidget {
           unselectedLabelColor: CupertinoColors.inactiveGray,
         )
       ),
-      home: const HomeView(),
+      home: const TwitterTabBarView(),
     );
   }
 }
